@@ -40,8 +40,9 @@
 
 <section class="menu-filter order-section">
   <div class="wrap order-layout">
-    <!-- Replace the form action with your Formspree endpoint: https://formspree.io/f/your-id -->
-    <form class="order-card" id="contact-form" action="https://formspree.io/f/your-id" method="POST">
+    <!-- Submits to the Belvoro CRM intake endpoint via JS below (creates a contact + a
+         pickup request the team confirms on callback). No page reload. -->
+    <form class="order-card" id="contact-form" action="#" method="POST">
 
       <section class="order-step" id="request" aria-labelledby="step1-title">
         <h2 class="step-title" id="step1-title"><span class="step-num">1</span> Pick your platters</h2>
@@ -95,7 +96,10 @@
         <p class="cart-total"><span>Subtotal</span> <strong id="cart-total">$0</strong></p>
       </div>
       <input type="hidden" name="catering_request" id="cart-field">
+      <!-- honeypot: hidden from people, bots fill it; server drops any submission that has it -->
+      <input type="text" name="company" id="company-hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
       <button type="submit" class="btn btn-solid order-submit" id="submit-btn">Send Message</button>
+      <p class="form-error" id="form-error" role="alert" hidden style="color:#b3261e;margin:.5rem 0 0"></p>
       <p class="request-note">Nothing is charged online. We&rsquo;ll call to confirm availability, pickup time and your final price.</p>
     </form>
 
@@ -335,6 +339,62 @@
     var size = sizes.hasOwnProperty(params.get('size')) ? params.get('size') : Object.keys(sizes)[0];
     setQty(key + '|' + size, 1);
   }
+})();
+</script>
+<script>
+(function () {
+  var INTAKE = 'https://belvoro-20-production.up.railway.app/intake/order';
+  var KEY = 'wc_f66a1e94575f7c35be412ad0';
+  var form = document.getElementById('contact-form');
+  var btn = document.getElementById('submit-btn');
+  var errEl = document.getElementById('form-error');
+  if (!form || !btn) return;
+  function val(id) { var e = document.getElementById(id); return e ? (e.value || '').trim() : ''; }
+  function showErr(m) { if (!errEl) return; errEl.textContent = m; errEl.hidden = false; }
+  function clearErr() { if (errEl) { errEl.hidden = true; errEl.textContent = ''; } }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (form.dataset.sending) return;
+    clearErr();
+    var payload = {
+      key: KEY,
+      name: val('name'),
+      phone: val('phone'),
+      email: val('email'),
+      pickupDate: val('date'),
+      pickupTime: val('time'),
+      order: val('cart-field'),
+      message: val('message'),
+      company: val('company-hp')
+    };
+    if (!payload.name || !payload.phone) { showErr('Please add your name and a phone number.'); return; }
+    if (!payload.order && !payload.message) { showErr('Add a platter or a message before sending.'); return; }
+
+    form.dataset.sending = '1';
+    var orig = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Sending…';
+    fetch(INTAKE, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
+      .then(function (res) {
+        if (!res.ok) throw new Error((res.d && res.d.error) || 'Sorry, that did not go through.');
+        var requested = res.d && res.d.status === 'requested';
+        var card = document.createElement('div');
+        card.className = 'order-card';
+        card.setAttribute('role', 'status');
+        card.innerHTML = '<h2 class="step-title">Got it &#9825;</h2><p>' +
+          (requested
+            ? 'Your order request is in. We&rsquo;ll call you shortly to confirm your pickup time and final price.'
+            : 'Thanks for reaching out. We&rsquo;ll get back to you shortly.') +
+          '</p><p class="request-note">Prefer to talk now? Call <a href="tel:+19057318305">(905) 731-8305</a>.</p>';
+        form.parentNode.replaceChild(card, form);
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      })
+      .catch(function (err) {
+        btn.disabled = false; btn.textContent = orig; delete form.dataset.sending;
+        showErr((err && err.message) || 'Something went wrong. Please call us at (905) 731-8305.');
+      });
+  });
 })();
 </script>
 <script src="https://belvoro-20-production.up.railway.app/widget.js" data-belvoro="wc_f66a1e94575f7c35be412ad0" async></script>
