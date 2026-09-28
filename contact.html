@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Place an Order — St. Urbain Bagel</title>
+<meta name="description" content="Send St. Urbain Bagel a catering request or a question. We call every request back to confirm.">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="page-order">
+
+<header class="site-header transparent-header">
+  <div class="wrap">
+    <a class="logo" href="index.html"><img src="images/site-logo.png" alt="St. Urbain Bagel"></a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle">
+    <label for="nav-toggle" class="nav-toggle-label">&#9776;</label>
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="menu.html">Menu</a>
+      <a href="catering.html">Catering</a>
+      <a href="about.html">About Us</a>
+    </nav>
+    <a class="btn btn-solid header-cta" href="contact.html">Place an Order</a>
+  </div>
+</header>
+
+<section class="hero hero-menu hero-compact">
+  <div class="hero-bg">
+    <img src="images/header.jpeg" alt="Fresh Montreal-style bagels, sandwiches and cream cheeses">
+  </div>
+  <div class="hero-fade"></div>
+  <div class="wrap">
+    <div class="hero-copy">
+      <h1>Place an Order</h1>
+      <p class="lede">Build a catering request or send us a question, and we&rsquo;ll call you back to confirm</p>
+      <p class="menu-note script">Fresh. Authentic.<br>Made with care. <span class="heart">&#9825;</span></p>
+    </div>
+  </div>
+</section>
+
+<section class="menu-filter order-section">
+  <div class="wrap order-layout">
+    <div class="order-card">
+
+      <section class="order-step" id="request" aria-labelledby="step1-title">
+        <h2 class="step-title" id="step1-title"><span class="step-num">1</span> Choose your catering</h2>
+        <p class="step-hint">Pick a platter, choose its size and cream cheeses, then add it to your request. Only have a question? Skip to step 2.</p>
+        <div class="platter-picker" id="rq-picker" role="radiogroup" aria-label="Platter"></div>
+
+        <div class="rq-options" id="rq-options" hidden>
+          <div id="rq-size-group">
+            <p class="rq-label">Size</p>
+            <div class="rq-sizes" id="rq-sizes"></div>
+          </div>
+          <div id="rq-cheese-group" hidden>
+            <p class="rq-label"><span id="rq-cheese-label">Choose cream cheeses</span> <span class="rq-label-hint">Repeats are fine</span></p>
+            <div class="rq-cheeses" id="rq-cheeses"></div>
+          </div>
+          <p class="rq-error" id="rq-error" role="alert" hidden></p>
+          <button type="button" class="btn btn-solid rq-add" id="rq-add">Add to request</button>
+        </div>
+
+        <div class="cart" id="cart" aria-live="polite">
+          <h3>Your request</h3>
+          <p class="cart-empty" id="cart-empty">Nothing added yet. Choose a platter above to start.</p>
+          <ul id="cart-list"></ul>
+          <p class="cart-total"><span>Total</span> <strong id="cart-total">$0</strong></p>
+        </div>
+        <p class="request-note"><strong>This is a request, not an order.</strong> Nothing is charged online. We&rsquo;ll call you to confirm availability, pickup time and your final price.</p>
+      </section>
+
+      <!-- Replace the form action with your Formspree endpoint: https://formspree.io/f/your-id -->
+      <form class="order-form" id="contact-form" action="https://formspree.io/f/your-id" method="POST" aria-labelledby="step2-title">
+        <h2 class="step-title" id="step2-title"><span class="step-num">2</span> Your details</h2>
+        <input type="hidden" name="catering_request" id="cart-field">
+        <div class="field-row">
+          <div class="field">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone" autocomplete="tel" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="email">Email <span class="optional">(optional)</span></label>
+          <input type="email" id="email" name="email" autocomplete="email">
+        </div>
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" placeholder="Pickup date and time, allergies, or any questions" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-solid order-submit" id="submit-btn">Send Message</button>
+      </form>
+    </div>
+
+    <aside class="order-info" aria-label="Contact details">
+      <h2>Prefer to call?</h2>
+      <a class="order-phone" href="tel:+19057318305">(905) 731-8305</a>
+      <dl>
+        <div>
+          <dt>Hours</dt>
+          <dd>Monday: 7am &ndash; 2pm<br>Tuesday &ndash; Sunday: 7am &ndash; 4pm</dd>
+        </div>
+        <div>
+          <dt>Visit</dt>
+          <dd><a href="https://maps.google.com/?q=7077+Bathurst+Street,+Thornhill,+ON" target="_blank" rel="noopener">7077 Bathurst Street, Thornhill, ON</a></dd>
+        </div>
+        <div>
+          <dt>Email</dt>
+          <dd><a href="mailto:sturbainbagel.thonhill@gmail.com">sturbainbagel.thonhill@gmail.com</a></dd>
+        </div>
+      </dl>
+    </aside>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <svg class="footer-skyline" viewBox="0 0 420 120" fill="none" aria-hidden="true">
+    <path d="M0 118h60v-38h14v38h26V64h20v54h30V86h22v32h26V54l8-30 8 30v64h30V72h18v46h30V92h20v26h30V78h16v40h38" stroke="rgba(255,255,255,0.14)" stroke-width="2"/>
+    <path d="M150 118V44l4-22 4 22v74" stroke="rgba(255,255,255,0.14)" stroke-width="2"/>
+  </svg>
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <img src="images/site-logo.png" alt="St. Urbain Bagel">
+      <p class="footer-tagline">Fresh. Authentic.<span class="script">Made with care &#9825;</span></p>
+      <p class="footer-credit">Made by Belvoro</p>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <a href="index.html">Home</a>
+      <a href="menu.html">Full Menu</a>
+      <a href="catering.html">Catering</a>
+      <a href="about.html">About Us</a>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-col">
+      <h4>Get In Touch</h4>
+      <p><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> (905) 731-8305</p>
+      <p><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg> sturbainbagel.thonhill@gmail.com</p>
+      <p><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> 7077 Bathurst Street, Thornhill, ON</p>
+      <div class="footer-social">
+        <a href="#" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12Z"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+<div class="chat-icon-overlay" aria-hidden="true">
+  <img src="images/chat-bagel.png" alt="">
+</div>
+
+<script>
+(function () {
+  var header = document.querySelector('.transparent-header');
+  if (!header) return;
+  function onScroll() {
+    if (window.scrollY > 40) header.classList.add('scrolled');
+    else header.classList.remove('scrolled');
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+<script>
+(function () {
+  // ponytail: prices mirror catering.html, update both when they change
+  var PLATTERS = {
+    schmear:  { name: 'Bagel & Schmear Platter', img: 'platter-bagel-schmear.jpg', sizes: { Small: { price: 65, feeds: '12', cheeses: 3 }, Large: { price: 95, feeds: '18', cheeses: 4 } } },
+    salmon:   { name: 'Smoked Salmon Platter', img: 'platter-smoked-salmon.jpg', sizes: { Small: { price: 75, feeds: '12', cheeses: 3 }, Large: { price: 120, feeds: '18', cheeses: 4 } } },
+    sandwich: { name: 'Party Sandwich Platter', img: 'platter-sandwich.jpg', sizes: { Small: { price: 65, feeds: '12' }, Large: { price: 95, feeds: '18' } } },
+    dessert:  { name: 'Dessert Platter', img: 'platter-dessert.jpg', sizes: { Small: { price: 50, feeds: '12' }, Large: { price: 95, feeds: '18' } } },
+    // both salads share one photo (Greek bowl on the left, Harvest on the right); `zoom` crops to one bowl
+    greek:    { name: 'Greek Salad', img: 'platter-salads.jpg', zoom: 'left', sizes: { Regular: { price: 50, feeds: '10–12' } } },
+    harvest:  { name: 'Harvest Salad', img: 'platter-salads.jpg', zoom: 'right', sizes: { Regular: { price: 50, feeds: '10–12' } } }
+  };
+  var FLAVOURS = ['Plain', 'Dill & Garlic', 'Roasted Red Pepper', 'Jalapeno', 'Chive', 'Blueberry'];
+
+  function $(id) { return document.getElementById(id); }
+  var picker = $('rq-picker'), options = $('rq-options'), sizeGroup = $('rq-size-group'), sizes = $('rq-sizes'),
+      cheeseGroup = $('rq-cheese-group'), cheeses = $('rq-cheeses'), cheeseLabel = $('rq-cheese-label'),
+      error = $('rq-error'), addBtn = $('rq-add');
+  var cart = [];
+
+  function el(tag, props, text) {
+    var n = document.createElement(tag);
+    Object.keys(props || {}).forEach(function (k) { n[k] = props[k]; });
+    if (text) n.textContent = text;
+    return n;
+  }
+  function money(n) { return '$' + n; }
+  function checked(container) {
+    var r = container.querySelector('input:checked');
+    return r ? r.value : null;
+  }
+  function cheesePicks() { return Array.prototype.slice.call(cheeses.querySelectorAll('select')); }
+
+  Object.keys(PLATTERS).forEach(function (key) {
+    var p = PLATTERS[key];
+    var names = Object.keys(p.sizes);
+    var prices = names.map(function (s) { return p.sizes[s].price; });
+    var label = el('label', { className: 'pick' });
+    var input = el('input', { type: 'radio', name: 'rq-item', value: key });
+    input.addEventListener('change', function () {
+      renderOptions();
+      options.scrollIntoView({ block: 'nearest' });
+    });
+    var photo = el('span', { className: 'pick-photo' + (p.zoom ? ' zoom-' + p.zoom : '') });
+    photo.append(el('img', { src: 'images/' + p.img, alt: '', loading: 'lazy' }));
+    var body = el('span', { className: 'pick-body' });
+    body.append(
+      el('span', { className: 'pick-name' }, p.name),
+      el('span', { className: 'pick-price' }, names.length > 1 ? 'From ' + money(Math.min.apply(null, prices)) : money(prices[0]) + ', feeds ' + p.sizes[names[0]].feeds)
+    );
+    label.append(input, photo, body);
+    picker.append(label);
+  });
+
+  function renderOptions() {
+    error.hidden = true;
+    var p = PLATTERS[checked(picker)];
+    options.hidden = !p;
+    sizes.innerHTML = '';
+    if (!p) return;
+    var names = Object.keys(p.sizes);
+    sizeGroup.hidden = names.length < 2;
+    names.forEach(function (size, i) {
+      var s = p.sizes[size];
+      var label = el('label', { className: 'rq-size' });
+      var input = el('input', { type: 'radio', name: 'rq-size', value: size, checked: i === 0 });
+      input.addEventListener('change', renderCheeses);
+      var text = el('span');
+      text.append(el('strong', {}, size + ' ' + money(s.price)), el('small', {}, 'Feeds ' + s.feeds));
+      label.append(input, text);
+      sizes.append(label);
+    });
+    renderCheeses();
+  }
+
+  function renderCheeses() {
+    var s = PLATTERS[checked(picker)].sizes[checked(sizes)];
+    var count = s.cheeses || 0;
+    var kept = cheesePicks().map(function (sel) { return sel.value; });
+    cheeses.innerHTML = '';
+    cheeseGroup.hidden = !count;
+    cheeseLabel.textContent = 'Choose ' + count + ' cream cheeses';
+    for (var i = 0; i < count; i++) {
+      var sel = el('select', { ariaLabel: 'Cream cheese ' + (i + 1) });
+      sel.add(new Option('Cream cheese ' + (i + 1), ''));
+      FLAVOURS.forEach(function (f) { sel.add(new Option(f, f)); });
+      sel.value = kept[i] || '';
+      cheeses.append(sel);
+    }
+    addBtn.textContent = 'Add to request (' + money(s.price) + ')';
+  }
+
+  function showError(msg, focusEl) {
+    error.textContent = msg;
+    error.hidden = false;
+    if (focusEl) focusEl.focus();
+  }
+
+  addBtn.addEventListener('click', function () {
+    var p = PLATTERS[checked(picker)];
+    var picks = cheesePicks();
+    var missing = picks.filter(function (sel) { return !sel.value; })[0];
+    if (missing) return showError('Choose all ' + picks.length + ' cream cheese flavours.', missing);
+    var size = checked(sizes);
+    cart.push({
+      name: p.name,
+      size: Object.keys(p.sizes).length > 1 ? size : '',
+      price: p.sizes[size].price,
+      cheeses: picks.map(function (sel) { return sel.value; })
+    });
+    picker.querySelector('input:checked').checked = false;
+    cheeses.innerHTML = '';
+    renderOptions();
+    renderCart();
+    $('cart').scrollIntoView({ block: 'nearest' });
+  });
+
+  function describe(line) {
+    return line.name + (line.size ? ' (' + line.size + ')' : '');
+  }
+
+  function renderCart() {
+    var list = $('cart-list');
+    list.innerHTML = '';
+    var total = 0;
+    cart.forEach(function (line, i) {
+      total += line.price;
+      var li = el('li');
+      var info = el('div');
+      info.append(el('strong', {}, describe(line)));
+      if (line.cheeses.length) info.append(el('span', {}, 'Cream cheese: ' + line.cheeses.join(', ')));
+      var remove = el('button', { type: 'button', className: 'cart-remove', ariaLabel: 'Remove ' + describe(line) }, 'Remove');
+      remove.addEventListener('click', function () { cart.splice(i, 1); renderCart(); });
+      li.append(info, el('span', { className: 'cart-price' }, money(line.price)), remove);
+      list.append(li);
+    });
+    $('cart').classList.toggle('has-items', cart.length > 0);
+    $('cart-empty').hidden = cart.length > 0;
+    $('cart-total').textContent = money(total);
+    $('cart-field').value = cart.length ? cart.map(function (line) {
+      return describe(line) + ' – ' + money(line.price) + (line.cheeses.length ? ' – Cream cheese: ' + line.cheeses.join(', ') : '');
+    }).join('\n') + '\nTotal: ' + money(total) : '';
+    // a catering request can stand on its own, so the message is only needed without one
+    $('message').required = cart.length === 0;
+    $('submit-btn').textContent = cart.length ? 'Send Request' : 'Send Message';
+  }
+
+  // arriving from an "Add to request" button on the catering page
+  var params = new URLSearchParams(location.search);
+  var key = params.get('item'), size = params.get('size');
+  // only known keys reach querySelector, so odd URLs can't break the selector
+  if (PLATTERS.hasOwnProperty(key)) {
+    picker.querySelector('input[value="' + key + '"]').checked = true;
+    renderOptions();
+    if (PLATTERS[key].sizes.hasOwnProperty(size)) {
+      sizes.querySelector('input[value="' + size + '"]').checked = true;
+      renderCheeses();
+    }
+  }
+  renderCart();
+})();
+</script>
+<script src="https://belvoro-20-production.up.railway.app/widget.js" data-belvoro="wc_f66a1e94575f7c35be412ad0" async></script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu — St. Urbain Bagel</title>
+<meta name="description" content="Our full menu of Montreal-style bagels, sandwiches, spreads, pastries, and drinks — made fresh daily.">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="site-header transparent-header">
+  <div class="wrap">
+    <a class="logo" href="index.html"><img src="images/site-logo.png" alt="St. Urbain Bagel"></a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle">
+    <label for="nav-toggle" class="nav-toggle-label">&#9776;</label>
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="menu.html" class="active">Menu</a>
+      <a href="catering.html">Catering</a>
+      <a href="about.html">About Us</a>
+    </nav>
+    <a class="btn btn-solid header-cta" href="contact.html">Place an Order</a>
+  </div>
+</header>
+
+<section class="hero hero-menu">
+  <div class="hero-bg">
+    <img src="images/header.jpeg" alt="Fresh Montreal-style bagel sandwiches">
+  </div>
+  <div class="hero-fade"></div>
+  <div class="wrap">
+    <div class="hero-copy">
+      <h1>Our Menu</h1>
+      <p class="lede">Fresh Montreal-style bagels, sandwiches, spreads, pastries, and drinks made daily</p>
+      <p class="menu-note script">Same great bagels.<br>More to love. <span class="heart">&#9825;</span></p>
+    </div>
+  </div>
+</section>
+
+<section class="menu-filter">
+  <div class="wrap">
+    <div class="cat-pills">
+      <button class="pill active" data-cat="all" data-label="everything">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>
+        All
+      </button>
+      <button class="pill" data-cat="bagels" data-label="bagels">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
+        Bagels
+      </button>
+      <button class="pill" data-cat="sandwiches" data-label="sandwiches">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9c0-2 4-4 9-4s9 2 9 4-4 4-9 4-9-2-9-4z"/><path d="M3 9v3c0 2 4 4 9 4s9-2 9-4V9"/><path d="M6 12.5c2 1 4-1 6 0s4 1 6 0"/></svg>
+        Sandwiches
+      </button>
+      <button class="pill" data-cat="bakery" data-label="bakery &amp; pastries">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M4 16l2.5-7c.3-.9 1.5-1 2-.2L12 14l3.5-5.4c.5-.8 1.7-.7 2 .2L20 16z"/><path d="M4 16c2 1.5 14 1.5 16 0"/></svg>
+        Bakery &amp; Pastries
+      </button>
+      <button class="pill" data-cat="spreads" data-label="spreads">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 13a9 5 0 0 0 18 0"/><path d="M3 13c0-2.8 4-5 9-5s9 2.2 9 5"/><path d="M14 4c2 .5 3 2 2.5 3.5"/></svg>
+        Spreads
+      </button>
+      <button class="pill" data-cat="drinks" data-label="drinks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M7 8h10l-1 12H8z"/><path d="M6.5 8h11l-.4-3H6.9z"/></svg>
+        Drinks
+      </button>
+    </div>
+
+    <div class="menu-divider"><span>Browse Our Menu by Category</span></div>
+    <p class="menu-hint">Click on a category above to view our full menu. You&rsquo;re currently viewing <span id="current-cat">everything</span>.</p>
+  </div>
+</section>
+
+<section class="section menu-items">
+  <div class="wrap">
+
+    <div class="menu-group" data-cat="bagels">
+      <h2>Bagels</h2>
+      <div class="menu-grid">
+        <div class="menu-card">
+          <img src="images/bagels.jpg" alt="Half dozen Montreal bagels">
+          <div class="body"><h3>Half Dozen Montreal Bagels</h3><p class="price">$10.50</p></div>
+        </div>
+        <div class="menu-card">
+          <img src="images/sandwiches.jpg" alt="Montreal lox and cream cheese bagel">
+          <div class="body"><h3>Montreal Lox &amp; Cream Cheese Bagel</h3></div>
+        </div>
+      </div>
+      <p class="menu-note-text">Sesame, poppy, everything and plain &mdash; hand-rolled and wood-fired all day. Ask us what&rsquo;s fresh out of the oven!</p>
+    </div>
+
+    <div class="menu-group" data-cat="sandwiches">
+      <h2>Sandwiches</h2>
+      <div class="menu-grid">
+        <div class="menu-card">
+          <img src="images/sandwiches.jpg" alt="Bagel sandwich">
+          <div class="body"><h3>Classic Bagel Sandwich</h3><p class="price">Made to order</p></div>
+        </div>
+      </div>
+      <p class="menu-note-text">Piled with fresh fillings on your choice of bagel. Ask us what&rsquo;s fresh today.</p>
+    </div>
+
+    <div class="menu-group" data-cat="bakery">
+      <h2>Bakery &amp; Pastries</h2>
+      <div class="menu-grid">
+        <div class="menu-card">
+          <img src="images/bakery-pastries.jpg" alt="Assorted bakery and pastries">
+          <div class="body"><h3>Assorted Pastries</h3><p class="price">In-store daily</p></div>
+        </div>
+      </div>
+      <p class="menu-note-text">Danishes, muffins, cookies and more, baked fresh each morning.</p>
+    </div>
+
+    <div class="menu-group" data-cat="spreads">
+      <h2>Spreads</h2>
+      <div class="menu-grid">
+        <div class="menu-card">
+          <img src="images/spreads.jpg" alt="Plain cream cheese">
+          <div class="body"><h3>Cream Cheese &amp; Spreads</h3><p class="price">$9.50</p></div>
+        </div>
+      </div>
+      <ul class="flavour-list">
+        <li>Regular</li>
+        <li>Light</li>
+        <li>Chive</li>
+        <li>Blueberry</li>
+        <li>Jalape&ntilde;o</li>
+        <li>Lox</li>
+        <li>Everything</li>
+        <li>Egg Salad</li>
+        <li>Tuna Salad</li>
+      </ul>
+    </div>
+
+    <div class="menu-group" data-cat="drinks">
+      <h2>Drinks</h2>
+      <div class="menu-grid">
+        <div class="menu-card">
+          <img src="images/drinks.jpg" alt="Iced coffee">
+          <div class="body"><h3>Iced Coffee</h3><p class="price">$4.99</p></div>
+        </div>
+        <div class="menu-card">
+          <img src="images/drinks.jpg" alt="Lavazza coffee">
+          <div class="body"><h3>Lavazza Coffee</h3><p class="price">Hot &amp; fresh</p></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <svg class="footer-skyline" viewBox="0 0 420 120" fill="none" aria-hidden="true">
+    <path d="M0 118h60v-38h14v38h26V64h20v54h30V86h22v32h26V54l8-30 8 30v64h30V72h18v46h30V92h20v26h30V78h16v40h38" stroke="rgba(255,255,255,0.14)" stroke-width="2"/>
+    <path d="M150 118V44l4-22 4 22v74" stroke="rgba(255,255,255,0.14)" stroke-width="2"/>
+  </svg>
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <img src="images/site-logo.png" alt="St. Urbain Bagel">
+      <p class="footer-tagline">Fresh. Authentic.<span class="script">Made with care &#9825;</span></p>
+      <p class="footer-credit">Made by Belvoro</p>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <a href="index.html">Home</a>
+      <a href="menu.html">Full Menu</a>
+      <a href="catering.html">Catering</a>
+      <a href="about.html">About Us</a>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-col">
+      <h4>Get In Touch</h4>
+      <p><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> (905) 731-8305</p>
+      <p><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg> sturbainbagel.thonhill@gmail.com</p>
+      <p><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> 7077 Bathurst Street, Thornhill, ON</p>
+      <div class="footer-social">
+        <a href="#" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12Z"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+<div class="chat-icon-overlay" aria-hidden="true">
+  <img src="images/chat-bagel.png" alt="">
+</div>
+
+<script>
+(function () {
+  var header = document.querySelector('.transparent-header');
+  if (header) {
+    var onScroll = function () {
+      if (window.scrollY > 40) header.classList.add('scrolled');
+      else header.classList.remove('scrolled');
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  var pills = document.querySelectorAll('.pill');
+  var groups = document.querySelectorAll('.menu-group');
+  var current = document.getElementById('current-cat');
+  function select(cat, label) {
+    pills.forEach(function (p) { p.classList.toggle('active', p.dataset.cat === cat); });
+    groups.forEach(function (g) { g.hidden = cat !== 'all' && g.dataset.cat !== cat; });
+    if (current && label) current.innerHTML = label;
+  }
+  pills.forEach(function (p) {
+    p.addEventListener('click', function () { select(p.dataset.cat, p.dataset.label); });
+  });
+})();
+</script>
+<script src="https://belvoro-20-production.up.railway.app/widget.js" data-belvoro="wc_f66a1e94575f7c35be412ad0" async></script>
+</body>
+</html>
