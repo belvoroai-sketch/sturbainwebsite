@@ -50,15 +50,15 @@
         Bagels
       </button>
       <button class="pill" data-cat="sandwiches" data-label="sandwiches">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9c0-2 4-4 9-4s9 2 9 4-4 4-9 4-9-2-9-4z"/><path d="M3 9v3c0 2 4 4 9 4s9-2 9-4V9"/><path d="M6 12.5c2 1 4-1 6 0s4 1 6 0"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10a8 5 0 0 1 16 0z"/><path d="M3 13c1.5-1 3 1 4.5 0s3 1 4.5 0 3 1 4.5 0 3 1 4.5 0"/><path d="M4 15.5h16"/><path d="M4 17.5h16c0 1.4-1.1 2.5-2.5 2.5h-11C5.1 20 4 18.9 4 17.5z"/></svg>
         Sandwiches
       </button>
       <button class="pill" data-cat="bakery" data-label="bakery &amp; pastries">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M4 16l2.5-7c.3-.9 1.5-1 2-.2L12 14l3.5-5.4c.5-.8 1.7-.7 2 .2L20 16z"/><path d="M4 16c2 1.5 14 1.5 16 0"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19C1.5 13 6 6.5 12 6.5S22.5 13 20 19c-1.5-3.5-4.5-6-8-6s-6.5 2.5-8 6z"/><path d="M8.2 14.5c-.4-3-.2-5.5.8-7.3M12 13V6.5M15.8 14.5c.4-3 .2-5.5-.8-7.3"/></svg>
         Bakery &amp; Pastries
       </button>
       <button class="pill" data-cat="spreads" data-label="spreads">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 13a9 5 0 0 0 18 0"/><path d="M3 13c0-2.8 4-5 9-5s9 2.2 9 5"/><path d="M14 4c2 .5 3 2 2.5 3.5"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18a9 7 0 0 1-18 0z"/><path d="M6 12c.5-2.5 3-4 6-4s5.5 1.5 6 4"/><path d="M10.5 8.3c.3-1.5 1.8-2.6 3.5-2.3"/></svg>
         Spreads
       </button>
       <button class="pill" data-cat="drinks" data-label="drinks">
@@ -117,29 +117,27 @@
       <div class="menu-grid">
         <div class="menu-card">
           <img src="images/spreads.jpg" alt="Plain cream cheese">
-          <div class="body"><h3>Cream Cheese &amp; Spreads</h3><p class="price">$9.50</p></div>
+          <div class="body">
+            <h3>Cream Cheese &amp; Spreads</h3><p class="price">$9.50</p>
+            <ul class="flavour-list">
+              <li>Regular</li>
+              <li>Light</li>
+              <li>Chive</li>
+              <li>Blueberry</li>
+              <li>Jalape&ntilde;o</li>
+              <li>Lox</li>
+              <li>Everything</li>
+              <li>Egg Salad</li>
+              <li>Tuna Salad</li>
+            </ul>
+          </div>
         </div>
       </div>
-      <ul class="flavour-list">
-        <li>Regular</li>
-        <li>Light</li>
-        <li>Chive</li>
-        <li>Blueberry</li>
-        <li>Jalape&ntilde;o</li>
-        <li>Lox</li>
-        <li>Everything</li>
-        <li>Egg Salad</li>
-        <li>Tuna Salad</li>
-      </ul>
     </div>
 
     <div class="menu-group" data-cat="drinks">
       <h2>Drinks</h2>
       <div class="menu-grid">
-        <div class="menu-card">
-          <img src="images/drinks.jpg" alt="Iced coffee">
-          <div class="body"><h3>Iced Coffee</h3><p class="price">$4.99</p></div>
-        </div>
         <div class="menu-card">
           <img src="images/drinks.jpg" alt="Lavazza coffee">
           <div class="body"><h3>Lavazza Coffee</h3><p class="price">Hot &amp; fresh</p></div>
@@ -151,9 +149,10 @@
 </section>
 
 <footer class="site-footer">
-  <svg class="footer-skyline" viewBox="0 0 420 120" fill="none" aria-hidden="true">
-    <path d="M0 118h60v-38h14v38h26V64h20v54h30V86h22v32h26V54l8-30 8 30v64h30V72h18v46h30V92h20v26h30V78h16v40h38" stroke="rgba(255,255,255,0.14)" stroke-width="2"/>
-    <path d="M150 118V44l4-22 4 22v74" stroke="rgba(255,255,255,0.14)" stroke-width="2"/>
+  <svg class="footer-skyline" viewBox="0 0 420 200" fill="none" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+    <path d="M0 172H40V160H58V172H66V152H80V198"/>
+    <path d="M92 198L99 100H93V90H97V84H100V50H99V44H102V6H106V44H109V50H108V84H111V90H115V100H109L116 198"/>
+    <path d="M126 198V104L140 96V122H152V112H170V134H180V100H200V142H212V118H226V152H240V84H268V184H420"/>
   </svg>
   <div class="wrap footer-grid">
     <div class="footer-brand">

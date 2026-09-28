@@ -260,6 +260,8 @@ nav.main-nav a:hover {
 
 /* Catering platters */
 .page-catering .hero-bg img { object-position: center 85%; }
+/* longer lede pushes the centred title up; nudge it level with the other pages (desktop only) */
+@media (min-width: 861px) { .page-catering .hero-compact { min-height: 470px; } }
 .page-catering .menu-filter { padding-top: 26px; }
 .page-catering .menu-divider { margin-top: 0; }
 .page-catering .menu-hint { font-size: 0.9rem; margin-top: 8px; }
@@ -532,11 +534,13 @@ nav.main-nav a:hover {
 .quote-swoosh { display: block; width: 200px; max-width: 62%; height: auto; margin: 6px auto 0; }
 .quote-swoosh path { stroke: var(--blue); }
 .quote-mug { position: absolute; right: 3%; bottom: -96px; width: 320px; height: auto; z-index: 1; }
+/* home page: lift the mug further into the story section above */
+.quote-mug.mug-up { bottom: -40px; }
 
 /* Footer */
 footer.site-footer { background: var(--blue); color: #fff; padding: 48px 0 40px; position: relative; overflow: hidden; z-index: 2; }
 .footer-skyline { position: absolute; right: 0; bottom: 0; width: 460px; max-width: 42%; height: auto; z-index: 0; pointer-events: none; }
-.footer-skyline path { stroke: rgba(255, 255, 255, 0.16); fill: none; }
+.footer-skyline path { stroke: rgba(255, 255, 255, 0.3); fill: none; }
 .footer-grid {
   display: grid;
   grid-template-columns: 1.1fr 1px 0.8fr 1px 1.1fr;
@@ -590,12 +594,13 @@ footer.site-footer { background: var(--blue); color: #fff; padding: 48px 0 40px;
 .menu-groups { display: flex; flex-direction: column; gap: 48px; }
 .menu-group:not([hidden]) ~ .menu-group:not([hidden]) { margin-top: 48px; }
 .menu-group h2 { font-size: 1.4rem; text-transform: uppercase; border-bottom: 3px solid var(--blue); display: inline-block; padding-bottom: 4px; margin-bottom: 20px; }
-.flavour-list { display: flex; flex-wrap: wrap; gap: 10px; padding: 0; list-style: none; margin: 0; }
+.flavour-list { display: flex; flex-wrap: wrap; gap: 6px; padding: 0; list-style: none; margin: 10px 0 0; }
 .flavour-list li {
   background: #fff;
   border: 1px solid var(--cream-deep);
   border-radius: 999px;
-  padding: 8px 18px;
+  padding: 4px 10px;
+  font-size: 0.8rem;
   font-weight: 500;
 }
 
@@ -752,6 +757,11 @@ footer.site-footer { background: var(--blue); color: #fff; padding: 48px 0 40px;
   cursor: pointer;
 }
 .chip input { position: absolute; opacity: 0; pointer-events: none; }
+.chip:has(input:disabled) { opacity: 0.4; cursor: not-allowed; }
+.cheese-group { clear: both; }
+.cheese-group + .cheese-group { margin-top: 14px; padding-top: 14px; border-top: 1px dashed rgba(0,0,0,0.15); }
+.cheese-group-title { display: flex; justify-content: space-between; gap: 8px; margin: 0 0 8px; font-weight: 700; font-size: 0.9rem; }
+.cheese-group-title::after { content: attr(data-count); color: var(--blue); }
 .chip:has(input:checked) { background: var(--yellow); border-color: var(--yellow); }
 .chip:has(input:checked)::before { content: '\2713'; }
 .chip:has(input:focus-visible) { outline: 3px solid var(--blue); outline-offset: 2px; }
@@ -918,7 +928,7 @@ footer.site-footer { background: var(--blue); color: #fff; padding: 48px 0 40px;
   .story-text { padding: 30px 24px 32px; }
   .story-photo { min-height: 240px; order: -1; }
   .quote-band blockquote { padding: 0 24px; }
-  .quote-mug { position: static; display: block; margin: 18px auto 0; width: 120px; }
+  .quote-mug { display: none; }
   footer.site-footer { padding: 36px 0 30px; }
   .footer-grid { grid-template-columns: 1fr; gap: 26px; }
   .footer-divider { display: none; }
@@ -939,6 +949,10 @@ footer.site-footer { background: var(--blue); color: #fff; padding: 48px 0 40px;
   .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   .menu-card .body { padding: 10px 12px 12px; }
   .menu-card .body h3 { font-size: 0.92rem; }
+  /* spreads card: full width, photo beside the flavour list so it doesn't stretch into a tall column */
+  .menu-card:has(.flavour-list) { grid-column: 1 / -1; display: grid; grid-template-columns: 38% 1fr; }
+  .menu-card:has(.flavour-list) img { height: 100%; aspect-ratio: auto; }
+  .flavour-list li { padding: 3px 9px; font-size: 0.75rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

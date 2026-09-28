@@ -48,8 +48,8 @@
         <p class="step-hint">Tap <strong>+</strong> to add a platter. Just have a question? Skip to step 2.</p>
         <div class="order-list" id="order-list"></div>
         <fieldset class="cheese-pick" id="cheese-pick" hidden>
-          <legend>Cream cheese flavours <span class="script">pick your favourites &#9825;</span></legend>
-          <div class="chips" id="cheese-chips"></div>
+          <legend>Cream cheese flavours <span class="script">3 per small platter, 4 per large &#9825;</span></legend>
+          <div id="cheese-chips"></div>
         </fieldset>
       </section>
 
@@ -92,7 +92,7 @@
         <h3>Your request</h3>
         <p class="cart-empty" id="cart-empty">No platters yet. That&rsquo;s fine if you just have a question.</p>
         <ul id="cart-list"></ul>
-        <p class="cart-total"><span>Estimated total</span> <strong id="cart-total">$0</strong></p>
+        <p class="cart-total"><span>Subtotal</span> <strong id="cart-total">$0</strong></p>
       </div>
       <input type="hidden" name="catering_request" id="cart-field">
       <button type="submit" class="btn btn-solid order-submit" id="submit-btn">Send Message</button>
@@ -121,9 +121,10 @@
 </section>
 
 <footer class="site-footer">
-  <svg class="footer-skyline" viewBox="0 0 420 120" fill="none" aria-hidden="true">
-    <path d="M0 118h60v-38h14v38h26V64h20v54h30V86h22v32h26V54l8-30 8 30v64h30V72h18v46h30V92h20v26h30V78h16v40h38" stroke="rgba(255,255,255,0.14)" stroke-width="2"/>
-    <path d="M150 118V44l4-22 4 22v74" stroke="rgba(255,255,255,0.14)" stroke-width="2"/>
+  <svg class="footer-skyline" viewBox="0 0 420 200" fill="none" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+    <path d="M0 172H40V160H58V172H66V152H80V198"/>
+    <path d="M92 198L99 100H93V90H97V84H100V50H99V44H102V6H106V44H109V50H108V84H111V90H115V100H109L116 198"/>
+    <path d="M126 198V104L140 96V122H152V112H170V134H180V100H200V142H212V118H226V152H240V84H268V184H420"/>
   </svg>
   <div class="wrap footer-grid">
     <div class="footer-brand">
@@ -172,8 +173,8 @@
 (function () {
   // ponytail: prices mirror catering.html, update both when they change
   var PLATTERS = {
-    schmear:  { name: 'Bagel & Schmear Platter', img: 'platter-bagel-schmear.jpg', cheese: true, sizes: { Small: { price: 65, feeds: '12' }, Large: { price: 95, feeds: '18' } } },
-    salmon:   { name: 'Smoked Salmon Platter', img: 'platter-smoked-salmon.jpg', cheese: true, sizes: { Small: { price: 75, feeds: '12' }, Large: { price: 120, feeds: '18' } } },
+    schmear:  { name: 'Bagel & Schmear Platter', img: 'platter-bagel-schmear.jpg', sizes: { Small: { price: 65, feeds: '12', cheese: 3 }, Large: { price: 95, feeds: '18', cheese: 4 } } },
+    salmon:   { name: 'Smoked Salmon Platter', img: 'platter-smoked-salmon.jpg', sizes: { Small: { price: 75, feeds: '12', cheese: 3 }, Large: { price: 120, feeds: '18', cheese: 4 } } },
     sandwich: { name: 'Party Sandwich Platter', img: 'platter-sandwich.jpg', sizes: { Small: { price: 65, feeds: '12' }, Large: { price: 95, feeds: '18' } } },
     dessert:  { name: 'Dessert Platter', img: 'platter-dessert.jpg', sizes: { Small: { price: 50, feeds: '12' }, Large: { price: 95, feeds: '18' } } },
     // both salads share one photo (Greek bowl on the left, Harvest on the right); `zoom` crops to one bowl
@@ -222,11 +223,46 @@
     list.append(card);
   });
 
-  FLAVOURS.forEach(function (f) {
-    var chip = el('label', { className: 'chip' });
-    chip.append(el('input', { type: 'checkbox', value: f }), document.createTextNode(f));
-    chips.append(chip);
-  });
+  var picks = {}; // 'key|size#n' -> chosen flavours for that one platter
+
+  // one row of flavour chips per cream-cheese platter in the order
+  function cheeseUnits() {
+    var units = [];
+    Object.keys(qty).forEach(function (id) {
+      var parts = id.split('|'), p = PLATTERS[parts[0]], max = p.sizes[parts[1]].cheese;
+      if (!max) return;
+      for (var i = 1; i <= qty[id]; i++) {
+        units.push({ id: id + '#' + i, max: max, label: parts[1] + ' ' + p.name + (qty[id] > 1 ? ' #' + i : '') });
+      }
+    });
+    return units;
+  }
+
+  function renderCheese() {
+    chips.innerHTML = '';
+    cheeseUnits().forEach(function (u) {
+      var chosen = picks[u.id] = picks[u.id] || [];
+      var group = el('div', { className: 'cheese-group', role: 'group', ariaLabel: u.label + ' cream cheeses' });
+      group.dataset.unit = u.id;
+      group.dataset.max = u.max;
+      var row = el('div', { className: 'chips' });
+      FLAVOURS.forEach(function (f) {
+        var chip = el('label', { className: 'chip' });
+        chip.append(el('input', { type: 'checkbox', value: f, checked: chosen.indexOf(f) > -1 }), document.createTextNode(f));
+        row.append(chip);
+      });
+      group.append(el('p', { className: 'cheese-group-title' }, u.label), row);
+      chips.append(group);
+      lockFull(group);
+    });
+  }
+
+  // once a platter has all its cream cheeses, grey out the rest
+  function lockFull(group) {
+    var n = picks[group.dataset.unit].length, max = +group.dataset.max;
+    group.querySelector('.cheese-group-title').dataset.count = n + '/' + max;
+    Array.prototype.forEach.call(group.querySelectorAll('input'), function (c) { c.disabled = n >= max && !c.checked; });
+  }
 
   function setQty(id, n) {
     qty[id] = Math.max(0, Math.min(MAX, n));
@@ -236,6 +272,7 @@
     stepper.querySelector('.qty-add').disabled = qty[id] === MAX;
     var card = stepper.closest('.order-item');
     card.classList.toggle('is-on', Array.prototype.some.call(card.querySelectorAll('output'), function (o) { return o.textContent !== '0'; }));
+    renderCheese();
     renderCart();
   }
 
@@ -245,20 +282,24 @@
     var id = btn.parentNode.dataset.id;
     setQty(id, qty[id] + (btn.classList.contains('qty-add') ? 1 : -1));
   });
-  chips.addEventListener('change', renderCart);
+  chips.addEventListener('change', function (e) {
+    var group = e.target.closest('.cheese-group');
+    picks[group.dataset.unit] = Array.prototype.map.call(group.querySelectorAll('input:checked'), function (c) { return c.value; });
+    lockFull(group);
+    renderCart();
+  });
 
   function renderCart() {
     var lines = Object.keys(qty).filter(function (id) { return qty[id] > 0; }).map(function (id) {
       var parts = id.split('|'), p = PLATTERS[parts[0]], n = qty[id];
       return {
         text: n + ' × ' + p.name + (Object.keys(p.sizes).length > 1 ? ' (' + parts[1] + ')' : ''),
-        price: n * p.sizes[parts[1]].price,
-        cheese: p.cheese
+        price: n * p.sizes[parts[1]].price
       };
     });
     var total = lines.reduce(function (sum, l) { return sum + l.price; }, 0);
-    var needsCheese = lines.some(function (l) { return l.cheese; });
-    var flavours = Array.prototype.map.call(chips.querySelectorAll('input:checked'), function (c) { return c.value; });
+    var units = cheeseUnits();
+    var needsCheese = units.length > 0;
 
     var ul = $('cart-list');
     ul.innerHTML = '';
@@ -271,10 +312,9 @@
     $('cart').classList.toggle('has-items', lines.length > 0);
     $('cart-empty').hidden = lines.length > 0;
     $('cart-total').textContent = money(total);
-    // ponytail: one shared flavour list for all platters; we confirm the split on the callback
     $('cart-field').value = lines.length ? lines.map(function (l) { return l.text + ' – ' + money(l.price); }).join('\n') +
-      (needsCheese ? '\nCream cheese: ' + (flavours.length ? flavours.join(', ') : 'not chosen') : '') +
-      '\nTotal: ' + money(total) : '';
+      units.map(function (u) { return '\nCream cheese, ' + u.label + ': ' + (picks[u.id].length ? picks[u.id].join(', ') : 'not chosen'); }).join('') +
+      '\nSubtotal: ' + money(total) : '';
     // a catering request can stand on its own, so the message is only needed without one
     $('message').required = lines.length === 0;
     $('submit-btn').textContent = lines.length ? 'Send Request · ' + money(total) : 'Send Message';
