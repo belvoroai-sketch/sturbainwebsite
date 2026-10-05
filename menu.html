@@ -6,6 +6,7 @@
 <title>Menu — St. Urbain Bagel</title>
 <meta name="description" content="Our full menu of Montreal-style bagels, sandwiches, spreads, pastries, and drinks — made fresh daily.">
 <link rel="stylesheet" href="css/styles.css">
+<style>.menu-card .body .desc{margin:0 0 6px;color:#555;font-size:.9rem;line-height:1.4}</style>
 </head>
 <body>
 
@@ -197,17 +198,89 @@
     onScroll();
   }
 
-  var pills = document.querySelectorAll('.pill');
-  var groups = document.querySelectorAll('.menu-group');
+  // ── Category pill filter. Re-queried after a live render so it works on
+  //    whichever groups are currently on the page (static fallback or synced). ──
   var current = document.getElementById('current-cat');
-  function select(cat, label) {
-    pills.forEach(function (p) { p.classList.toggle('active', p.dataset.cat === cat); });
-    groups.forEach(function (g) { g.hidden = cat !== 'all' && g.dataset.cat !== cat; });
-    if (current && label) current.innerHTML = label;
+  function wireFilter() {
+    var pills = document.querySelectorAll('.pill');
+    var groups = document.querySelectorAll('.menu-group');
+    function select(cat, label) {
+      pills.forEach(function (p) { p.classList.toggle('active', p.dataset.cat === cat); });
+      groups.forEach(function (g) { g.hidden = cat !== 'all' && g.dataset.cat !== cat; });
+      if (current && label) current.innerHTML = label;
+    }
+    pills.forEach(function (p) {
+      p.onclick = function () { select(p.dataset.cat, p.dataset.label); };
+    });
   }
-  pills.forEach(function (p) {
-    p.addEventListener('click', function () { select(p.dataset.cat, p.dataset.label); });
-  });
+  wireFilter();
+
+  // ── Live menu, synced from the Belvoro inventory ("Show on website" items).
+  //    Keeps the hand-written cards as a fallback if the feed can't be reached. ──
+  var BELVORO = 'https://belvoro-20-production.up.railway.app';
+  var KEY = 'wc_f66a1e94575f7c35be412ad0';
+  // Maps a Belvoro category to this page's pill slug + the group heading/fallback image.
+  var CATS = [
+    { label: 'bagel',              slug: 'bagels',     title: 'Bagels',             img: 'images/bagels.jpg' },
+    { label: 'sandwich',           slug: 'sandwiches', title: 'Sandwiches',         img: 'images/sandwiches.jpg' },
+    { label: 'bakery & pastries',  slug: 'bakery',     title: 'Bakery & Pastries',  img: 'images/bakery-pastries.jpg' },
+    { label: 'spread',             slug: 'spreads',    title: 'Spreads',            img: 'images/spreads.jpg' },
+    { label: 'drinks',             slug: 'drinks',     title: 'Drinks',             img: 'images/drinks.jpg' }
+  ];
+  function esc(s) { var d = document.createElement('div'); d.textContent = (s == null ? '' : String(s)); return d.innerHTML; }
+  function catFor(name) {
+    var n = (name || '').trim().toLowerCase();
+    for (var i = 0; i < CATS.length; i++) if (CATS[i].label === n) return CATS[i];
+    return null;
+  }
+  function card(item, fallbackImg) {
+    var img = item.image ? BELVORO + item.image : fallbackImg;
+    var price = (typeof item.price === 'number')
+      ? '<p class="price">$' + item.price.toFixed(2) + '</p>'
+      : '';
+    var desc = item.description ? '<p class="desc">' + esc(item.description) + '</p>' : '';
+    return '<div class="menu-card">'
+      + (img ? '<img src="' + esc(img) + '" alt="' + esc(item.title) + '" loading="lazy">' : '')
+      + '<div class="body"><h3>' + esc(item.title) + '</h3>' + desc + price + '</div></div>';
+  }
+
+  fetch(BELVORO + '/menu/' + KEY + '.json')
+    .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+    .then(function (data) {
+      var items = (data && data.items) || [];
+      if (!items.length) return; // keep the static fallback
+
+      // Bucket items by category, preserving an "Other" bucket for anything unmapped.
+      var byCat = {}; var extras = [];
+      items.forEach(function (it) {
+        var c = catFor(it.category);
+        if (c) { (byCat[c.slug] = byCat[c.slug] || []).push(it); }
+        else { extras.push(it); }
+      });
+
+      var html = '';
+      var seenPills = {};
+      CATS.forEach(function (c) {
+        var list = byCat[c.slug];
+        if (!list || !list.length) return;
+        seenPills[c.slug] = true;
+        html += '<div class="menu-group" data-cat="' + c.slug + '"><h2>' + esc(c.title) + '</h2>'
+          + '<div class="menu-grid">' + list.map(function (it) { return card(it, c.img); }).join('') + '</div></div>';
+      });
+      if (extras.length) {
+        html += '<div class="menu-group" data-cat="more"><h2>More</h2>'
+          + '<div class="menu-grid">' + extras.map(function (it) { return card(it, ''); }).join('') + '</div></div>';
+      }
+
+      var wrap = document.querySelector('.menu-items .wrap');
+      if (wrap && html) wrap.innerHTML = html;
+      // Hide pills whose category has no synced items (keep "All").
+      document.querySelectorAll('.pill').forEach(function (p) {
+        if (p.dataset.cat !== 'all') p.hidden = !seenPills[p.dataset.cat];
+      });
+      wireFilter();
+    })
+    .catch(function () { /* feed unreachable — static menu stays */ });
 })();
 </script>
 <script src="https://belvoro-20-production.up.railway.app/widget.js" data-belvoro="wc_f66a1e94575f7c35be412ad0" async></script>
