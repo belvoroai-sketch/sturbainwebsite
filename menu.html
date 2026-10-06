@@ -51,7 +51,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
         Bagels
       </button>
-      <button class="pill" data-cat="sandwiches" data-label="meals">
+      <button class="pill" data-cat="meals" data-label="meals">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10a8 5 0 0 1 16 0z"/><path d="M3 13c1.5-1 3 1 4.5 0s3 1 4.5 0 3 1 4.5 0 3 1 4.5 0"/><path d="M4 15.5h16"/><path d="M4 17.5h16c0 1.4-1.1 2.5-2.5 2.5h-11C5.1 20 4 18.9 4 17.5z"/></svg>
         Meals
       </button>
@@ -155,7 +155,7 @@
   // Maps a Belvoro category to this page's pill slug + the group heading/fallback image.
   var CATS = [
     { label: 'bagel',              slug: 'bagels',     title: 'Bagels',             img: 'images/bagels.jpg' },
-    { label: 'sandwich',           slug: 'sandwiches', title: 'Meals',              img: 'images/sandwiches.jpg' },
+    { label: 'meals',              slug: 'meals',      title: 'Meals',              img: 'images/sandwiches.jpg' },
     { label: 'bakery & pastries',  slug: 'bakery',     title: 'Bakery & Pastries',  img: 'images/bakery-pastries.jpg' },
     { label: 'spread',             slug: 'spreads',    title: 'Spreads',            img: 'images/spreads.jpg' },
     { label: 'drinks',             slug: 'drinks',     title: 'Drinks',             img: 'images/drinks.jpg' }
@@ -177,42 +177,30 @@
       + '<div class="body"><h3>' + esc(item.title) + '</h3>' + desc + price + '</div></div>';
   }
 
+  // All five categories always render in order; an empty one shows a note so
+  // the menu structure stays consistent. Items in other categories (catering,
+  // in-store only) aren't surfaced here — catering has its own page.
+  function render(items) {
+    var byCat = {};
+    (items || []).forEach(function (it) {
+      var c = catFor(it.category);
+      if (c) (byCat[c.slug] = byCat[c.slug] || []).push(it);
+    });
+    var html = CATS.map(function (c) {
+      var list = byCat[c.slug] || [];
+      var inner = list.length
+        ? '<div class="menu-grid">' + list.map(function (it) { return card(it, c.img); }).join('') + '</div>'
+        : '<p class="menu-note-text">More coming soon — ask us what&rsquo;s fresh today.</p>';
+      return '<div class="menu-group" data-cat="' + c.slug + '"><h2>' + esc(c.title) + '</h2>' + inner + '</div>';
+    }).join('');
+    var wrap = document.querySelector('.menu-items .wrap');
+    if (wrap) wrap.innerHTML = html;
+    wireFilter();
+  }
+
   fetch(BELVORO + '/menu/' + KEY + '.json')
     .then(function (r) { if (!r.ok) throw 0; return r.json(); })
-    .then(function (data) {
-      var items = (data && data.items) || [];
-      if (!items.length) { showEmpty('Our menu is being updated — check back soon.'); return; }
-
-      // Bucket items by category, preserving an "Other" bucket for anything unmapped.
-      var byCat = {}; var extras = [];
-      items.forEach(function (it) {
-        var c = catFor(it.category);
-        if (c) { (byCat[c.slug] = byCat[c.slug] || []).push(it); }
-        else { extras.push(it); }
-      });
-
-      var html = '';
-      var seenPills = {};
-      CATS.forEach(function (c) {
-        var list = byCat[c.slug];
-        if (!list || !list.length) return;
-        seenPills[c.slug] = true;
-        html += '<div class="menu-group" data-cat="' + c.slug + '"><h2>' + esc(c.title) + '</h2>'
-          + '<div class="menu-grid">' + list.map(function (it) { return card(it, c.img); }).join('') + '</div></div>';
-      });
-      if (extras.length) {
-        html += '<div class="menu-group" data-cat="more"><h2>More</h2>'
-          + '<div class="menu-grid">' + extras.map(function (it) { return card(it, ''); }).join('') + '</div></div>';
-      }
-
-      var wrap = document.querySelector('.menu-items .wrap');
-      if (wrap && html) wrap.innerHTML = html;
-      // Hide pills whose category has no synced items (keep "All").
-      document.querySelectorAll('.pill').forEach(function (p) {
-        if (p.dataset.cat !== 'all') p.hidden = !seenPills[p.dataset.cat];
-      });
-      wireFilter();
-    })
+    .then(function (data) { render((data && data.items) || []); })
     .catch(function () { showEmpty('Our menu is being updated — check back soon.'); });
 })();
 </script>
