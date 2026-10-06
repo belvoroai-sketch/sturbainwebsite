@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Menu — St. Urbain Bagel</title>
 <meta name="description" content="Our full menu of Montreal-style bagels, sandwiches, spreads, pastries, and drinks — made fresh daily.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="css/styles.css">
 <style>.menu-card .body .desc{margin:0 0 6px;color:#555;font-size:.9rem;line-height:1.4}</style>
 </head>
@@ -50,9 +51,9 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
         Bagels
       </button>
-      <button class="pill" data-cat="sandwiches" data-label="sandwiches">
+      <button class="pill" data-cat="sandwiches" data-label="meals">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10a8 5 0 0 1 16 0z"/><path d="M3 13c1.5-1 3 1 4.5 0s3 1 4.5 0 3 1 4.5 0 3 1 4.5 0"/><path d="M4 15.5h16"/><path d="M4 17.5h16c0 1.4-1.1 2.5-2.5 2.5h-11C5.1 20 4 18.9 4 17.5z"/></svg>
-        Sandwiches
+        Meals
       </button>
       <button class="pill" data-cat="bakery" data-label="bakery &amp; pastries">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19C1.5 13 6 6.5 12 6.5S22.5 13 20 19c-1.5-3.5-4.5-6-8-6s-6.5 2.5-8 6z"/><path d="M8.2 14.5c-.4-3-.2-5.5.8-7.3M12 13V6.5M15.8 14.5c.4-3 .2-5.5-.8-7.3"/></svg>
@@ -75,77 +76,7 @@
 
 <section class="section menu-items">
   <div class="wrap">
-
-    <div class="menu-group" data-cat="bagels">
-      <h2>Bagels</h2>
-      <div class="menu-grid">
-        <div class="menu-card">
-          <img src="images/bagels.jpg" alt="Half dozen Montreal bagels">
-          <div class="body"><h3>Half Dozen Montreal Bagels</h3><p class="price">$10.50</p></div>
-        </div>
-        <div class="menu-card">
-          <img src="images/sandwiches.jpg" alt="Montreal lox and cream cheese bagel">
-          <div class="body"><h3>Montreal Lox &amp; Cream Cheese Bagel</h3></div>
-        </div>
-      </div>
-      <p class="menu-note-text">Sesame, poppy, everything and plain &mdash; hand-rolled and wood-fired all day. Ask us what&rsquo;s fresh out of the oven!</p>
-    </div>
-
-    <div class="menu-group" data-cat="sandwiches">
-      <h2>Sandwiches</h2>
-      <div class="menu-grid">
-        <div class="menu-card">
-          <img src="images/sandwiches.jpg" alt="Bagel sandwich">
-          <div class="body"><h3>Classic Bagel Sandwich</h3><p class="price">Made to order</p></div>
-        </div>
-      </div>
-      <p class="menu-note-text">Piled with fresh fillings on your choice of bagel. Ask us what&rsquo;s fresh today.</p>
-    </div>
-
-    <div class="menu-group" data-cat="bakery">
-      <h2>Bakery &amp; Pastries</h2>
-      <div class="menu-grid">
-        <div class="menu-card">
-          <img src="images/bakery-pastries.jpg" alt="Assorted bakery and pastries">
-          <div class="body"><h3>Assorted Pastries</h3><p class="price">In-store daily</p></div>
-        </div>
-      </div>
-      <p class="menu-note-text">Danishes, muffins, cookies and more, baked fresh each morning.</p>
-    </div>
-
-    <div class="menu-group" data-cat="spreads">
-      <h2>Spreads</h2>
-      <div class="menu-grid">
-        <div class="menu-card">
-          <img src="images/spreads.jpg" alt="Plain cream cheese">
-          <div class="body">
-            <h3>Cream Cheese &amp; Spreads</h3><p class="price">$9.50</p>
-            <ul class="flavour-list">
-              <li>Regular</li>
-              <li>Light</li>
-              <li>Chive</li>
-              <li>Blueberry</li>
-              <li>Jalape&ntilde;o</li>
-              <li>Lox</li>
-              <li>Everything</li>
-              <li>Egg Salad</li>
-              <li>Tuna Salad</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="menu-group" data-cat="drinks">
-      <h2>Drinks</h2>
-      <div class="menu-grid">
-        <div class="menu-card">
-          <img src="images/drinks.jpg" alt="Lavazza coffee">
-          <div class="body"><h3>Lavazza Coffee</h3><p class="price">Hot &amp; fresh</p></div>
-        </div>
-      </div>
-    </div>
-
+    <p class="menu-hint" id="menu-empty">Loading our menu&hellip;</p>
   </div>
 </section>
 
@@ -216,13 +147,15 @@
   wireFilter();
 
   // ── Live menu, synced from the Belvoro inventory ("Show on website" items).
-  //    Keeps the hand-written cards as a fallback if the feed can't be reached. ──
+  //    No feed / no items → show an empty state, not placeholder cards. ──
+  var empty = document.getElementById('menu-empty');
+  function showEmpty(msg) { if (empty) empty.textContent = msg; }
   var BELVORO = 'https://belvoro-20-production.up.railway.app';
   var KEY = 'wc_f66a1e94575f7c35be412ad0';
   // Maps a Belvoro category to this page's pill slug + the group heading/fallback image.
   var CATS = [
     { label: 'bagel',              slug: 'bagels',     title: 'Bagels',             img: 'images/bagels.jpg' },
-    { label: 'sandwich',           slug: 'sandwiches', title: 'Sandwiches',         img: 'images/sandwiches.jpg' },
+    { label: 'sandwich',           slug: 'sandwiches', title: 'Meals',              img: 'images/sandwiches.jpg' },
     { label: 'bakery & pastries',  slug: 'bakery',     title: 'Bakery & Pastries',  img: 'images/bakery-pastries.jpg' },
     { label: 'spread',             slug: 'spreads',    title: 'Spreads',            img: 'images/spreads.jpg' },
     { label: 'drinks',             slug: 'drinks',     title: 'Drinks',             img: 'images/drinks.jpg' }
@@ -248,7 +181,7 @@
     .then(function (r) { if (!r.ok) throw 0; return r.json(); })
     .then(function (data) {
       var items = (data && data.items) || [];
-      if (!items.length) return; // keep the static fallback
+      if (!items.length) { showEmpty('Our menu is being updated — check back soon.'); return; }
 
       // Bucket items by category, preserving an "Other" bucket for anything unmapped.
       var byCat = {}; var extras = [];
@@ -280,7 +213,7 @@
       });
       wireFilter();
     })
-    .catch(function () { /* feed unreachable — static menu stays */ });
+    .catch(function () { showEmpty('Our menu is being updated — check back soon.'); });
 })();
 </script>
 <script src="https://belvoro-20-production.up.railway.app/widget.js" data-belvoro="wc_f66a1e94575f7c35be412ad0" async></script>
