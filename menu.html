@@ -7,7 +7,6 @@
 <meta name="description" content="Our full menu of Montreal-style bagels, sandwiches, spreads, pastries, and drinks — made fresh daily.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="css/styles.css">
-<style>.menu-card .body .desc{margin:0 0 6px;color:#555;font-size:.9rem;line-height:1.4}</style>
 </head>
 <body>
 
@@ -63,9 +62,13 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18a9 7 0 0 1-18 0z"/><path d="M6 12c.5-2.5 3-4 6-4s5.5 1.5 6 4"/><path d="M10.5 8.3c.3-1.5 1.8-2.6 3.5-2.3"/></svg>
         Spreads
       </button>
-      <button class="pill" data-cat="drinks" data-label="drinks">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M7 8h10l-1 12H8z"/><path d="M6.5 8h11l-.4-3H6.9z"/></svg>
-        Drinks
+      <button class="pill" data-cat="hot-drinks" data-label="hot drinks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h12v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M16 10h2.2a2 2 0 0 1 0 4H16"/><path d="M7 5.5c.6-.8.6-1.6 0-2.4M11 5.5c.6-.8.6-1.6 0-2.4"/></svg>
+        Hot Drinks
+      </button>
+      <button class="pill" data-cat="cold-drinks" data-label="cold drinks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1.2 11.1a1 1 0 0 1-1 .9H8.2a1 1 0 0 1-1-.9z"/><path d="M5.6 8l.8-3h11.2l.8 3"/><path d="M13.5 2.5l-2.2 5.5"/></svg>
+        Cold Drinks
       </button>
       <button class="pill" data-cat="more" data-label="more">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
@@ -111,7 +114,7 @@
       <p><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg> sturbainbagel.thornhill@gmail.com</p>
       <p><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> 7077 Bathurst Street, Thornhill, ON</p>
       <div class="footer-social">
-        <a href="#" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+        <a href="https://www.instagram.com/st.urbainbagelthornhill/" target="_blank" rel="noopener" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
         <a href="#" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12Z"/></svg></a>
       </div>
     </div>
@@ -156,13 +159,14 @@
   function showEmpty(msg) { if (empty) empty.textContent = msg; }
   var BELVORO = 'https://belvoro-20-production.up.railway.app';
   var KEY = 'wc_f66a1e94575f7c35be412ad0';
-  // Maps a Belvoro category to this page's pill slug + the group heading/fallback image.
+  // Maps a Belvoro category to this page's pill slug + the group heading.
   var CATS = [
     { label: 'bagel',              slug: 'bagels',     title: 'Bagels',             img: 'images/bagels.jpg' },
     { label: 'meals',              slug: 'meals',      title: 'Meals',              img: 'images/sandwiches.jpg' },
     { label: 'bakery & pastries',  slug: 'bakery',     title: 'Bakery & Pastries',  img: 'images/bakery-pastries.jpg' },
     { label: 'spread',             slug: 'spreads',    title: 'Spreads',            img: 'images/spreads.jpg' },
-    { label: 'drinks',             slug: 'drinks',     title: 'Drinks',             img: 'images/drinks.jpg' },
+    { label: 'hot drinks',         slug: 'hot-drinks', title: 'Hot Drinks',         img: 'images/drinks.jpg' },
+    { label: 'cold drinks',        slug: 'cold-drinks',title: 'Cold Drinks',        img: 'images/drinks.jpg' },
     { label: 'more',               slug: 'more',       title: 'More',               img: '' }
   ];
   function esc(s) { var d = document.createElement('div'); d.textContent = (s == null ? '' : String(s)); return d.innerHTML; }
@@ -171,18 +175,22 @@
     for (var i = 0; i < CATS.length; i++) if (CATS[i].label === n) return CATS[i];
     return null;
   }
-  function card(item, fallbackImg) {
-    var img = item.image ? BELVORO + item.image : fallbackImg;
+  // Items without their own photo still show — with a branded placeholder tile
+  // rather than borrowing a generic category stock image (which repeated across
+  // every photo-less item and read as a bug).
+  function card(item) {
+    var media = item.image
+      ? '<img src="' + esc(BELVORO + item.image) + '" alt="' + esc(item.title) + '" loading="lazy">'
+      : '<div class="ph" aria-hidden="true"></div>';
     var price = (typeof item.price === 'number')
       ? '<p class="price">$' + item.price.toFixed(2) + '</p>'
       : '';
     var desc = item.description ? '<p class="desc">' + esc(item.description) + '</p>' : '';
-    return '<div class="menu-card">'
-      + (img ? '<img src="' + esc(img) + '" alt="' + esc(item.title) + '" loading="lazy">' : '')
+    return '<div class="menu-card">' + media
       + '<div class="body"><h3>' + esc(item.title) + '</h3>' + desc + price + '</div></div>';
   }
 
-  // All five categories always render in order; an empty one shows a note so
+  // Every category always renders in order; an empty one shows a note so
   // the menu structure stays consistent. Items in other categories (catering,
   // in-store only) aren't surfaced here — catering has its own page.
   function render(items) {
@@ -194,7 +202,7 @@
     var html = CATS.map(function (c) {
       var list = byCat[c.slug] || [];
       var inner = list.length
-        ? '<div class="menu-grid">' + list.map(function (it) { return card(it, c.img); }).join('') + '</div>'
+        ? '<div class="menu-grid">' + list.map(function (it) { return card(it); }).join('') + '</div>'
         : '<p class="menu-note-text">More coming soon — ask us what&rsquo;s fresh today.</p>';
       return '<div class="menu-group" data-cat="' + c.slug + '"><h2>' + esc(c.title) + '</h2>' + inner + '</div>';
     }).join('');
