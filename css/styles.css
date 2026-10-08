@@ -750,30 +750,13 @@ footer.site-footer { background: var(--blue); color: #fff; padding: 48px 0 40px;
 .cheese-pick { margin: 16px 0 0; padding: 16px 18px 18px; border: 0; border-radius: 18px; background: var(--cream); }
 .cheese-pick legend { float: left; width: 100%; padding: 0; margin: 0 0 10px; font-weight: 700; color: var(--blue); }
 .cheese-pick legend .script { display: block; font-size: 1.3rem; font-weight: 600; line-height: 1.2; }
-.chips { clear: both; display: flex; flex-wrap: wrap; gap: 8px; }
-.chip {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border: 2px solid var(--blue);
-  border-radius: 999px;
-  background: #fff;
-  color: var(--blue);
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-.chip input { position: absolute; opacity: 0; pointer-events: none; }
-.chip:has(input:disabled) { opacity: 0.4; cursor: not-allowed; }
+.chips { clear: both; display: flex; flex-direction: column; gap: 4px; }
+.cheese-flavour { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 4px 0; }
+.cheese-flavour-name { font-weight: 600; font-size: 0.95rem; color: var(--blue); }
 .cheese-group { clear: both; }
 .cheese-group + .cheese-group { margin-top: 14px; padding-top: 14px; border-top: 1px dashed rgba(0,0,0,0.15); }
 .cheese-group-title { display: flex; justify-content: space-between; gap: 8px; margin: 0 0 8px; font-weight: 700; font-size: 0.9rem; }
 .cheese-group-title::after { content: attr(data-count); color: var(--blue); }
-.chip:has(input:checked) { background: var(--yellow); border-color: var(--yellow); }
-.chip:has(input:checked)::before { content: '\2713'; }
-.chip:has(input:focus-visible) { outline: 3px solid var(--blue); outline-offset: 2px; }
 
 /* Fields: cream fill, blue icon, yellow focus ring */
 .order-fields { display: flex; flex-direction: column; gap: 16px; }

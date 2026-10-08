@@ -197,6 +197,12 @@
     return n;
   }
   function money(n) { return '$' + n; }
+  // ['Plain','Plain','Chive'] -> 'Plain ×2, Chive'
+  function countParts(arr) {
+    var order = [], c = {};
+    arr.forEach(function (f) { if (!(f in c)) { c[f] = 0; order.push(f); } c[f]++; });
+    return order.map(function (f) { return c[f] > 1 ? f + ' ×' + c[f] : f; }).join(', ');
+  }
 
   var qty = {}; // 'key|size' -> count
   var list = $('order-list'), chips = $('cheese-chips');
@@ -252,9 +258,17 @@
       group.dataset.max = u.max;
       var row = el('div', { className: 'chips' });
       FLAVOURS.forEach(function (f) {
-        var chip = el('label', { className: 'chip' });
-        chip.append(el('input', { type: 'checkbox', value: f, checked: chosen.indexOf(f) > -1 }), document.createTextNode(f));
-        row.append(chip);
+        var n = chosen.filter(function (x) { return x === f; }).length;
+        var item = el('div', { className: 'cheese-flavour' });
+        item.dataset.flavour = f;
+        var st = el('div', { className: 'qty', role: 'group', ariaLabel: f });
+        st.append(
+          el('button', { type: 'button', className: 'qty-remove', ariaLabel: 'Remove one ' + f }, '−'),
+          el('output', {}, String(n)),
+          el('button', { type: 'button', className: 'qty-add', ariaLabel: 'Add one ' + f }, '+')
+        );
+        item.append(el('span', { className: 'cheese-flavour-name' }, f), st);
+        row.append(item);
       });
       group.append(el('p', { className: 'cheese-group-title' }, u.label), row);
       chips.append(group);
@@ -262,11 +276,17 @@
     });
   }
 
-  // once a platter has all its cream cheeses, grey out the rest
+  // sync each flavour's count + stepper buttons; once the platter has all its
+  // cream cheeses, every "+" greys out (but "−" stays live to free a slot)
   function lockFull(group) {
-    var n = picks[group.dataset.unit].length, max = +group.dataset.max;
+    var chosen = picks[group.dataset.unit], max = +group.dataset.max, n = chosen.length;
     group.querySelector('.cheese-group-title').dataset.count = n + '/' + max;
-    Array.prototype.forEach.call(group.querySelectorAll('input'), function (c) { c.disabled = n >= max && !c.checked; });
+    Array.prototype.forEach.call(group.querySelectorAll('.cheese-flavour'), function (item) {
+      var c = chosen.filter(function (x) { return x === item.dataset.flavour; }).length;
+      item.querySelector('output').textContent = c;
+      item.querySelector('.qty-remove').disabled = c === 0;
+      item.querySelector('.qty-add').disabled = n >= max;
+    });
   }
 
   function setQty(id, n) {
@@ -287,9 +307,13 @@
     var id = btn.parentNode.dataset.id;
     setQty(id, qty[id] + (btn.classList.contains('qty-add') ? 1 : -1));
   });
-  chips.addEventListener('change', function (e) {
-    var group = e.target.closest('.cheese-group');
-    picks[group.dataset.unit] = Array.prototype.map.call(group.querySelectorAll('input:checked'), function (c) { return c.value; });
+  chips.addEventListener('click', function (e) {
+    var btn = e.target.closest('button'); if (!btn) return;
+    var group = e.target.closest('.cheese-group'), item = e.target.closest('.cheese-flavour');
+    if (!group || !item) return;
+    var chosen = picks[group.dataset.unit], f = item.dataset.flavour, max = +group.dataset.max;
+    if (btn.classList.contains('qty-add')) { if (chosen.length < max) chosen.push(f); }
+    else { var i = chosen.indexOf(f); if (i > -1) chosen.splice(i, 1); }
     lockFull(group);
     renderCart();
   });
@@ -318,7 +342,7 @@
     $('cart-empty').hidden = lines.length > 0;
     $('cart-total').textContent = money(total);
     $('cart-field').value = lines.length ? lines.map(function (l) { return l.text + ' – ' + money(l.price); }).join('\n') +
-      units.map(function (u) { return '\nCream cheese, ' + u.label + ': ' + (picks[u.id].length ? picks[u.id].join(', ') : 'not chosen'); }).join('') +
+      units.map(function (u) { return '\nCream cheese, ' + u.label + ': ' + (picks[u.id].length ? countParts(picks[u.id]) : 'not chosen'); }).join('') +
       '\nSubtotal: ' + money(total) : '';
     // a catering request can stand on its own, so the message is only needed without one
     $('message').required = lines.length === 0;
