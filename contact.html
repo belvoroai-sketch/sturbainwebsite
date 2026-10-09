@@ -49,6 +49,10 @@
         <h2 class="step-title" id="step1-title"><span class="step-num">1</span> Pick your platters</h2>
         <p class="step-hint">Tap <strong>+</strong> to add a platter. Just have a question? Skip to step 2.</p>
         <div class="order-list" id="order-list"></div>
+        <fieldset class="cheese-pick" id="bagel-pick" hidden>
+          <legend>Choose your bagels <span class="script">12 per small platter, 18 per large &#9825;</span></legend>
+          <div id="bagel-chips"></div>
+        </fieldset>
         <fieldset class="cheese-pick" id="cheese-pick" hidden>
           <legend>Cream cheese flavours <span class="script">3 per small platter, 4 per large &#9825;</span></legend>
           <div id="cheese-chips"></div>
@@ -178,15 +182,25 @@
 (function () {
   // ponytail: prices mirror catering.html, update both when they change
   var PLATTERS = {
-    schmear:  { name: 'Bagel & Schmear Platter', img: 'platter-bagel-schmear.jpg', sizes: { Small: { price: 65, feeds: '12', cheese: 3 }, Large: { price: 95, feeds: '18', cheese: 4 } } },
-    salmon:   { name: 'Smoked Salmon Platter', img: 'platter-smoked-salmon.jpg', sizes: { Small: { price: 75, feeds: '12', cheese: 3 }, Large: { price: 120, feeds: '18', cheese: 4 } } },
+    schmear:  { name: 'Bagel & Schmear Platter', img: 'platter-bagel-schmear.jpg', sizes: { Small: { price: 65, feeds: '12', cheese: 3, bagels: 12 }, Large: { price: 95, feeds: '18', cheese: 4, bagels: 18 } } },
+    salmon:   { name: 'Smoked Salmon Platter', img: 'platter-smoked-salmon.jpg', sizes: { Small: { price: 75, feeds: '12', cheese: 3, bagels: 12 }, Large: { price: 120, feeds: '18', cheese: 4, bagels: 18 } } },
     sandwich: { name: 'Party Sandwich Platter', img: 'platter-sandwich.jpg', sizes: { Small: { price: 65, feeds: '12' }, Large: { price: 95, feeds: '18' } } },
     dessert:  { name: 'Dessert Platter', img: 'platter-dessert.jpg', sizes: { Small: { price: 50, feeds: '12' }, Large: { price: 95, feeds: '18' } } },
     // both salads share one photo (Greek bowl on the left, Harvest on the right); `zoom` crops to one bowl
     greek:    { name: 'Greek Salad', img: 'platter-salads.jpg', zoom: 'left', sizes: { Regular: { price: 50, feeds: '10–12' } } },
     harvest:  { name: 'Harvest Salad', img: 'platter-salads.jpg', zoom: 'right', sizes: { Regular: { price: 50, feeds: '10–12' } } }
   };
-  var FLAVOURS = ['Plain', 'Dill & Garlic', 'Roasted Red Pepper', 'Jalapeno', 'Chive', 'Blueberry'];
+  var FLAVOURS = ['Plain', 'Dill & Garlic', 'Roasted Red Pepper', 'Jalapeno', 'Chive', 'Blueberry'].map(function (n) { return { name: n }; });
+  // Base bagels are included; every flat version plus Flat Pumpernickel Sesame,
+  // Cheddar and Cheddar Jalapeño are $1 more each (upcharge flows into the subtotal).
+  var BAGELS = (function () {
+    var base = ['Whole Wheat Sesame', 'Whole Wheat', 'Sesame Seed', 'Poppyseed', 'Plain', 'Salty Poppy', 'Cinnamon Raisin', 'Chocolate Chip', 'Flaxseed', 'Pumpernickel', 'Everything'];
+    var list = base.map(function (n) { return { name: n }; });
+    base.forEach(function (n) { list.push({ name: 'Flat ' + n, up: 1 }); });
+    ['Flat Pumpernickel Sesame', 'Cheddar', 'Cheddar Jalapeño'].forEach(function (n) { list.push({ name: n, up: 1 }); });
+    return list;
+  })();
+  var BAGEL_UP = {}; BAGELS.forEach(function (b) { if (b.up) BAGEL_UP[b.name] = b.up; });
   var MAX = 20;
 
   function $(id) { return document.getElementById(id); }
@@ -205,7 +219,7 @@
   }
 
   var qty = {}; // 'key|size' -> count
-  var list = $('order-list'), chips = $('cheese-chips');
+  var list = $('order-list');
 
   Object.keys(PLATTERS).forEach(function (key) {
     var p = PLATTERS[key];
@@ -234,59 +248,88 @@
     list.append(card);
   });
 
-  var picks = {}; // 'key|size#n' -> chosen flavours for that one platter
-
-  // one row of flavour chips per cream-cheese platter in the order
-  function cheeseUnits() {
-    var units = [];
-    Object.keys(qty).forEach(function (id) {
-      var parts = id.split('|'), p = PLATTERS[parts[0]], max = p.sizes[parts[1]].cheese;
-      if (!max) return;
-      for (var i = 1; i <= qty[id]; i++) {
-        units.push({ id: id + '#' + i, max: max, label: parts[1] + ' ' + p.name + (qty[id] > 1 ? ' #' + i : '') });
-      }
-    });
-    return units;
-  }
-
-  function renderCheese() {
-    chips.innerHTML = '';
-    cheeseUnits().forEach(function (u) {
-      var chosen = picks[u.id] = picks[u.id] || [];
-      var group = el('div', { className: 'cheese-group', role: 'group', ariaLabel: u.label + ' cream cheeses' });
-      group.dataset.unit = u.id;
-      group.dataset.max = u.max;
-      var row = el('div', { className: 'chips' });
-      FLAVOURS.forEach(function (f) {
-        var n = chosen.filter(function (x) { return x === f; }).length;
-        var item = el('div', { className: 'cheese-flavour' });
-        item.dataset.flavour = f;
-        var st = el('div', { className: 'qty', role: 'group', ariaLabel: f });
-        st.append(
-          el('button', { type: 'button', className: 'qty-remove', ariaLabel: 'Remove one ' + f }, '−'),
-          el('output', {}, String(n)),
-          el('button', { type: 'button', className: 'qty-add', ariaLabel: 'Add one ' + f }, '+')
-        );
-        item.append(el('span', { className: 'cheese-flavour-name' }, f), st);
-        row.append(item);
+  // A per-platter flavour picker (cream cheeses, bagels): one group of steppers
+  // per platter unit, each capped at `maxFor` picks. Both pickers share this.
+  function makePicker(cfg) {
+    var chips = cfg.chipsEl, picks = {}; // 'key|size#n' -> chosen flavours for that one platter
+    function units() {
+      var out = [];
+      Object.keys(qty).forEach(function (id) {
+        var parts = id.split('|'), p = PLATTERS[parts[0]], max = cfg.maxFor(p.sizes[parts[1]]);
+        if (!max) return;
+        for (var i = 1; i <= qty[id]; i++) {
+          out.push({ id: id + '#' + i, max: max, label: parts[1] + ' ' + p.name + (qty[id] > 1 ? ' #' + i : '') });
+        }
       });
-      group.append(el('p', { className: 'cheese-group-title' }, u.label), row);
-      chips.append(group);
+      return out;
+    }
+    // sync each flavour's count + stepper buttons; once the platter is full,
+    // every "+" greys out (but "−" stays live to free a slot)
+    function lockFull(group) {
+      var chosen = picks[group.dataset.unit], max = +group.dataset.max, n = chosen.length;
+      group.querySelector('.cheese-group-title').dataset.count = n + '/' + max;
+      Array.prototype.forEach.call(group.querySelectorAll('.cheese-flavour'), function (item) {
+        var c = chosen.filter(function (x) { return x === item.dataset.flavour; }).length;
+        item.querySelector('output').textContent = c;
+        item.querySelector('.qty-remove').disabled = c === 0;
+        item.querySelector('.qty-add').disabled = n >= max;
+      });
+    }
+    function render() {
+      chips.innerHTML = '';
+      units().forEach(function (u) {
+        var chosen = picks[u.id] = picks[u.id] || [];
+        var group = el('div', { className: 'cheese-group', role: 'group', ariaLabel: u.label + ' ' + cfg.noun });
+        group.dataset.unit = u.id;
+        group.dataset.max = u.max;
+        var row = el('div', { className: 'chips' });
+        cfg.flavours.forEach(function (f) {
+          var n = chosen.filter(function (x) { return x === f.name; }).length;
+          var item = el('div', { className: 'cheese-flavour' });
+          item.dataset.flavour = f.name;
+          var st = el('div', { className: 'qty', role: 'group', ariaLabel: f.name });
+          st.append(
+            el('button', { type: 'button', className: 'qty-remove', ariaLabel: 'Remove one ' + f.name }, '−'),
+            el('output', {}, String(n)),
+            el('button', { type: 'button', className: 'qty-add', ariaLabel: 'Add one ' + f.name }, '+')
+          );
+          item.append(el('span', { className: 'cheese-flavour-name' }, f.name + (f.up ? ' (+$' + f.up + ')' : '')), st);
+          row.append(item);
+        });
+        group.append(el('p', { className: 'cheese-group-title' }, u.label), row);
+        chips.append(group);
+        lockFull(group);
+      });
+    }
+    chips.addEventListener('click', function (e) {
+      var btn = e.target.closest('button'); if (!btn) return;
+      var group = e.target.closest('.cheese-group'), item = e.target.closest('.cheese-flavour');
+      if (!group || !item) return;
+      var chosen = picks[group.dataset.unit], f = item.dataset.flavour, max = +group.dataset.max;
+      if (btn.classList.contains('qty-add')) { if (chosen.length < max) chosen.push(f); }
+      else { var i = chosen.indexOf(f); if (i > -1) chosen.splice(i, 1); }
       lockFull(group);
+      renderCart();
     });
+    return { picks: picks, units: units, render: render };
   }
 
-  // sync each flavour's count + stepper buttons; once the platter has all its
-  // cream cheeses, every "+" greys out (but "−" stays live to free a slot)
-  function lockFull(group) {
-    var chosen = picks[group.dataset.unit], max = +group.dataset.max, n = chosen.length;
-    group.querySelector('.cheese-group-title').dataset.count = n + '/' + max;
-    Array.prototype.forEach.call(group.querySelectorAll('.cheese-flavour'), function (item) {
-      var c = chosen.filter(function (x) { return x === item.dataset.flavour; }).length;
-      item.querySelector('output').textContent = c;
-      item.querySelector('.qty-remove').disabled = c === 0;
-      item.querySelector('.qty-add').disabled = n >= max;
+  var cheese = makePicker({ chipsEl: $('cheese-chips'), flavours: FLAVOURS, noun: 'cream cheeses', maxFor: function (s) { return s.cheese || 0; } });
+  var bagel = makePicker({ chipsEl: $('bagel-chips'), flavours: BAGELS, noun: 'bagels', maxFor: function (s) { return s.bagels || 0; } });
+
+  // sum of the +$1 upcharges across every bagel chosen
+  function bagelUpcharge() {
+    var sum = 0;
+    bagel.units().forEach(function (u) {
+      (bagel.picks[u.id] || []).forEach(function (name) { sum += BAGEL_UP[name] || 0; });
     });
+    return sum;
+  }
+  function unitLines(picker, noun) {
+    return picker.units().map(function (u) {
+      var sel = picker.picks[u.id] || [];
+      return '\n' + noun + ', ' + u.label + ': ' + (sel.length ? countParts(sel) : 'not chosen');
+    }).join('');
   }
 
   function setQty(id, n) {
@@ -297,7 +340,8 @@
     stepper.querySelector('.qty-add').disabled = qty[id] === MAX;
     var card = stepper.closest('.order-item');
     card.classList.toggle('is-on', Array.prototype.some.call(card.querySelectorAll('output'), function (o) { return o.textContent !== '0'; }));
-    renderCheese();
+    bagel.render();
+    cheese.render();
     renderCart();
   }
 
@@ -306,16 +350,6 @@
     if (!btn) return;
     var id = btn.parentNode.dataset.id;
     setQty(id, qty[id] + (btn.classList.contains('qty-add') ? 1 : -1));
-  });
-  chips.addEventListener('click', function (e) {
-    var btn = e.target.closest('button'); if (!btn) return;
-    var group = e.target.closest('.cheese-group'), item = e.target.closest('.cheese-flavour');
-    if (!group || !item) return;
-    var chosen = picks[group.dataset.unit], f = item.dataset.flavour, max = +group.dataset.max;
-    if (btn.classList.contains('qty-add')) { if (chosen.length < max) chosen.push(f); }
-    else { var i = chosen.indexOf(f); if (i > -1) chosen.splice(i, 1); }
-    lockFull(group);
-    renderCart();
   });
 
   function renderCart() {
@@ -326,9 +360,8 @@
         price: n * p.sizes[parts[1]].price
       };
     });
-    var total = lines.reduce(function (sum, l) { return sum + l.price; }, 0);
-    var units = cheeseUnits();
-    var needsCheese = units.length > 0;
+    var up = bagelUpcharge();
+    var total = lines.reduce(function (sum, l) { return sum + l.price; }, 0) + up;
 
     var ul = $('cart-list');
     ul.innerHTML = '';
@@ -337,12 +370,18 @@
       li.append(el('span', {}, money(l.price)));
       ul.append(li);
     });
-    $('cheese-pick').hidden = !needsCheese;
+    if (up > 0) {
+      var upLi = el('li', {}, 'Bagel upgrades (' + up + ' × $1)');
+      upLi.append(el('span', {}, money(up)));
+      ul.append(upLi);
+    }
+    $('bagel-pick').hidden = bagel.units().length === 0;
+    $('cheese-pick').hidden = cheese.units().length === 0;
     $('cart').classList.toggle('has-items', lines.length > 0);
     $('cart-empty').hidden = lines.length > 0;
     $('cart-total').textContent = money(total);
     $('cart-field').value = lines.length ? lines.map(function (l) { return l.text + ' – ' + money(l.price); }).join('\n') +
-      units.map(function (u) { return '\nCream cheese, ' + u.label + ': ' + (picks[u.id].length ? countParts(picks[u.id]) : 'not chosen'); }).join('') +
+      unitLines(bagel, 'Bagels') + unitLines(cheese, 'Cream cheese') +
       '\nSubtotal: ' + money(total) : '';
     // a catering request can stand on its own, so the message is only needed without one
     $('message').required = lines.length === 0;
