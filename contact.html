@@ -180,12 +180,14 @@
 </script>
 <script>
 (function () {
-  // ponytail: prices mirror catering.html, update both when they change
+  // Prices here are the offline FALLBACK - the fetch at the bottom of this
+  // script overwrites them live from the Belvoro catalog (same feed as
+  // catering.html), so catalog price changes apply without editing this file.
   var PLATTERS = {
-    schmear:  { name: 'Bagel & Schmear Platter', img: 'platter-bagel-schmear.jpg', sizes: { Small: { price: 65, feeds: '12', cheese: 3, bagels: 12 }, Large: { price: 95, feeds: '18', cheese: 4, bagels: 18 } } },
-    salmon:   { name: 'Smoked Salmon Platter', img: 'platter-smoked-salmon.jpg', sizes: { Small: { price: 75, feeds: '12', cheese: 3, bagels: 12 }, Large: { price: 120, feeds: '18', cheese: 4, bagels: 18 } } },
-    sandwich: { name: 'Party Sandwich Platter', img: 'platter-sandwich.jpg', sizes: { Small: { price: 65, feeds: '12' }, Large: { price: 95, feeds: '18' } } },
-    dessert:  { name: 'Dessert Platter', img: 'platter-dessert.jpg', sizes: { Small: { price: 50, feeds: '12' }, Large: { price: 95, feeds: '18' } } },
+    schmear:  { name: 'Bagel & Schmear Platter', img: 'platter-bagel-schmear.jpg', sizes: { Small: { price: 80, feeds: '12', cheese: 3, bagels: 12 }, Large: { price: 120, feeds: '18', cheese: 4, bagels: 18 } } },
+    salmon:   { name: 'Smoked Salmon Platter', img: 'platter-smoked-salmon.jpg', sizes: { Small: { price: 100, feeds: '12', cheese: 3, bagels: 12 }, Large: { price: 160, feeds: '18', cheese: 4, bagels: 18 } } },
+    sandwich: { name: 'Party Sandwich Platter', img: 'platter-sandwich.jpg', sizes: { Small: { price: 75, feeds: '12' }, Large: { price: 110, feeds: '18' } } },
+    dessert:  { name: 'Dessert Platter', img: 'platter-dessert.jpg', sizes: { Small: { price: 60, feeds: '12' }, Large: { price: 85, feeds: '18' } } },
     // both salads share one photo (Greek bowl on the left, Harvest on the right); `zoom` crops to one bowl
     greek:    { name: 'Greek Salad', img: 'platter-salads.jpg', zoom: 'left', sizes: { Regular: { price: 50, feeds: '10–12' } } },
     harvest:  { name: 'Harvest Salad', img: 'platter-salads.jpg', zoom: 'right', sizes: { Regular: { price: 50, feeds: '10–12' } } }
@@ -403,6 +405,42 @@
     var size = sizes.hasOwnProperty(params.get('size')) ? params.get('size') : Object.keys(sizes)[0];
     setQty(key + '|' + size, 1);
   }
+
+  // ── Live prices from the Belvoro catalog (same feed catering.html uses). The
+  //    hardcoded PLATTERS prices above only apply when the feed is unreachable. ──
+  var FEED_MAP = {
+    'schmear|Small':    'Small Bagel and Schmear Platter',
+    'schmear|Large':    'Large Bagel and Schmear Platter',
+    'salmon|Small':     'Small Smoked Salmon Platter',
+    'salmon|Large':     'Large Smoked Salmon Platter',
+    'sandwich|Small':   'Small Party Sandwich Platter',
+    'sandwich|Large':   'Large Party Sandwich Platter',
+    'dessert|Small':    'Small Dessert Platter',
+    'dessert|Large':    'Large Dessert Platter',
+    'greek|Regular':    'Greek Salad (Large)',
+    'harvest|Regular':  'Harvest Salad (Large)'
+  };
+  fetch('https://belvoro-20-production.up.railway.app/menu/wc_f66a1e94575f7c35be412ad0.json')
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (data) {
+      if (!data) return;
+      var live = {};
+      (data.items || []).forEach(function (it) { if (typeof it.price === 'number') live[it.title] = it.price; });
+      var changed = false;
+      Object.keys(FEED_MAP).forEach(function (id) {
+        var p = live[FEED_MAP[id]];
+        var parts = id.split('|');
+        var s = PLATTERS[parts[0]] && PLATTERS[parts[0]].sizes[parts[1]];
+        if (p == null || !s || s.price === p) return;
+        s.price = p; // subtotal + the submitted order text read this at click time
+        changed = true;
+        var stepper = list.querySelector('.qty[data-id="' + id + '"]');
+        var strong = stepper && stepper.parentNode.querySelector('strong');
+        if (strong) strong.textContent = strong.textContent.replace(/\$[\d.,]+/, money(p));
+      });
+      if (changed) renderCart();
+    })
+    .catch(function () { /* feed unreachable - fallback prices stay */ });
 })();
 </script>
 <script>
