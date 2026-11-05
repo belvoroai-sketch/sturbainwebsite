@@ -54,7 +54,7 @@
           <div id="bagel-chips"></div>
         </fieldset>
         <fieldset class="cheese-pick" id="cheese-pick" hidden>
-          <legend>Cream cheese flavours <span class="script">3 per small platter, 4 per large &#9825;</span></legend>
+          <legend>Cream cheese flavours <span class="script">schmear 2 small / 3 large, salmon 3 small / 4 large &#9825;</span></legend>
           <div id="cheese-chips"></div>
         </fieldset>
       </section>
@@ -79,8 +79,8 @@
               <input type="date" id="date" name="pickup_date">
             </div>
             <div class="field">
-              <label for="time">Pickup time <span class="optional">(7am &ndash; 4pm)</span></label>
-              <input type="time" id="time" name="pickup_time" min="07:00" max="16:00" step="900">
+              <label for="time">Pickup time <span class="optional">(8am &ndash; 4pm)</span></label>
+              <input type="time" id="time" name="pickup_time" min="08:00" max="16:00" step="900">
             </div>
           </div>
           <div class="field">
@@ -114,7 +114,7 @@
       <dl>
         <div>
           <dt>Hours</dt>
-          <dd>Monday: 7am &ndash; 2pm<br>Tuesday &ndash; Sunday: 7am &ndash; 4pm</dd>
+          <dd>Monday: 8am &ndash; 2pm<br>Tuesday &ndash; Sunday: 8am &ndash; 4pm</dd>
         </div>
         <div>
           <dt>Visit</dt>
@@ -184,7 +184,7 @@
   // script overwrites them live from the Belvoro catalog (same feed as
   // catering.html), so catalog price changes apply without editing this file.
   var PLATTERS = {
-    schmear:  { name: 'Bagel & Schmear Platter', img: 'platter-bagel-schmear.jpg', sizes: { Small: { price: 80, feeds: '12', cheese: 3, bagels: 12 }, Large: { price: 120, feeds: '18', cheese: 4, bagels: 18 } } },
+    schmear:  { name: 'Bagel & Schmear Platter', img: 'platter-bagel-schmear.jpg', sizes: { Small: { price: 80, feeds: '12', cheese: 2, bagels: 12 }, Large: { price: 120, feeds: '18', cheese: 3, bagels: 18 } } },
     salmon:   { name: 'Smoked Salmon Platter', img: 'platter-smoked-salmon.jpg', sizes: { Small: { price: 100, feeds: '12', cheese: 3, bagels: 12 }, Large: { price: 160, feeds: '18', cheese: 4, bagels: 18 } } },
     sandwich: { name: 'Party Sandwich Platter', img: 'platter-sandwich.jpg', sizes: { Small: { price: 75, feeds: '12' }, Large: { price: 110, feeds: '18' } } },
     dessert:  { name: 'Dessert Platter', img: 'platter-dessert.jpg', sizes: { Small: { price: 60, feeds: '12' }, Large: { price: 85, feeds: '18' } } },
